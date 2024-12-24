@@ -29,7 +29,7 @@ docker exec atarim-app composer install
 docker exex atarim-app php artisan migrate
 ```
 
-Test the service by visiting `http://localhost` in your browser. 
+Test the service by visiting [localhost](http://localhost) in your browser. 
 Default Laravel welcome page should be displayed.
 
 ### Usage
