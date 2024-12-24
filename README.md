@@ -16,7 +16,7 @@ This is a simple short url service that allows you to shorten a long url to a sh
 
 ### First launch
 
-Run the following command to build the project
+Run the following command to build and run the project
 
 ```shell
 docker compose up --build -d
