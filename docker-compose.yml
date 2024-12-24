@@ -1,0 +1,57 @@
+services:
+  nginx:
+    image: nginx
+    container_name: atarim-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www
+      - ./.docker/nginx:/etc/nginx/conf.d
+    depends_on:
+        - app
+    networks:
+      atarim:
+        aliases:
+          - atarim.localhost
+  app:
+    build:
+      context: .
+      dockerfile: .docker/php/Dockerfile
+    image: atarim
+    container_name: atarim-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    env_file:
+      - ./.docker/php/local.env
+    volumes:
+      - ./src:/var/www
+    depends_on:
+        db:
+            condition: service_healthy
+    ports:
+      - "9000:9000"
+    networks:
+      - atarim
+  db:
+    image: mysql:8.0.33
+    container_name: atarim-db
+    volumes:
+      - ./.docker/mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: "atarim"
+      MYSQL_ROOT_PASSWORD: "test"
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    networks:
+      atarim:
+        aliases:
+          - atarim-db
+
+networks:
+  atarim:
+    driver: bridge
